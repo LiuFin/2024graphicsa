@@ -1,8 +1,7 @@
 #include <opencv/highgui.h>
 #include <opencv/cv.h>
 #include <GL/glut.h>
-GLUquadric * quad =NULL;
- int myTexture(char * filename)
+int myTexture(char * filename)
 {
     IplImage * img = cvLoadImage(filename);
     cvCvtColor(img,img, CV_BGR2RGB);
@@ -17,16 +16,16 @@ GLUquadric * quad =NULL;
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->width, img->height, 0, GL_RGB, GL_UNSIGNED_BYTE, img->imageData);
     return id;
 }
-float angle=0;
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glPushMatrix();
-        glRotatef(90, 1, 0, 0);
-        glRotatef(angle++, 0, 0, 1);
-        gluSphere(quad, 1, 30 ,30);
-    glPopMatrix();
+    glBegin(GL_POLYGON);
+        glTexCoord2f(0,0); glVertex2f(-1,-1);
+        glTexCoord2f(0,1); glVertex2f(-1,+1);
+        glTexCoord2f(1,1); glVertex2f(+1,+1);
+        glTexCoord2f(1,0); glVertex2f(+1,-1);
+    glEnd();
+    glutSolidTeapot(0.3);
     glutSwapBuffers();
 }
 int main(int argc, char*argv[])
@@ -34,11 +33,7 @@ int main(int argc, char*argv[])
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE|GLUT_DEPTH);
     glutCreateWindow("week05");
-    glutIdleFunc(display);
     glutDisplayFunc(display);
-    myTexture("c:/earth.jpg");
-    quad = gluNewQuadric();
-    gluQuadricTexture(quad, 1);
+    myTexture("c:/image.jpg");
     glutMainLoop();
 }
-
